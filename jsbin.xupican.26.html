@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by salsa-project (http://jsbin.com/xupican/26/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+
+*{
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+section{
+  height: 100vh;
+  width: 100vw;
+}
+#track{
+  position: absolute;
+  width: 30vw;
+  height: 100vh;
+  background-color: rgb(44, 161, 224);
+ padding: 30px 8px;
+}
+#lists{
+  width: 100%;
+  background-color: rgba(255,255,255,0.7);
+  padding: 10px;
+  padding-bottom: 15px;
+  border-radius: 3px;
+  text-align: center;
+}
+h2{
+  color: rgb(46, 129, 173);
+  text-align: center;
+  padding: 5px 0px 0px;
+}
+#list-container{
+  margin-top: 10px;
+  list-style: none;
+}
+.list{
+  position: relative;
+  color: gray;
+  padding: 5px 0px;
+  margin: 3px 0px;
+  border: 1px rgb(62, 181, 249) solid;
+  border-radius: 3px;
+}
+.current{
+  color: rgb(62, 181, 249);
+  background-color: white;
+  font-weight: bold;
+  transform: scale(1.03);
+}
+.remove-list{
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translate(-50%,-50%);
+  height: 10px;
+  width: 10px;
+  border: 1px red solid;
+  border-radius: 50%;
+}
+form{
+  height: 20px;
+  width: 100%;
+  padding: 5px 0px;
+  margin: 10px 0px;
+}
+input{
+  float: left;
+  height: 30px;
+  width: 80%;
+  border: 0px;
+  text-align: center;
+  border-radius: 3px;
+}
+#title{
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+#btn{
+  width: 20%;
+  color: rgb(62, 181, 249);
+  background-color: white;
+  font-weight: 900;
+  font-size: 12pt;
+  border-left: 1px rgb(62, 181, 249) solid;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+#btn:hover, #tasks-btn:hover{
+  color: white;
+  background-color: rgb(62, 181, 249);
+}
+#todo{
+  position: relative;
+  float: right;
+  width: 70vw;
+  height: 100%;
+  background-color: rgb(62, 181, 249);
+}
+.todo__list{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  max-width: 90%;
+  margin: 0 auto;
+  background-color: rgba(255,255,255, 0.7);
+  border-radius: 3px;
+  padding: 15px 15px 8px;
+  /* visibility: hidden; */
+}
+.item{
+  position: relative;
+  list-style: none;
+  padding: 10px;
+}
+.check{
+  position: absolute;
+  top: 11px;
+  right: 0px;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background-color: white;
+}
+.item:hover .check{
+  animation: blob 0.3s infinite;
+}
+@keyframes blob{
+  0%{transform: scale(1)}
+  100%{transform: scale(1.2)}
+}
+.checked{
+  background-color: yellowgreen;
+}
+#tasks-form{
+  margin: 0px;
+}
+#tasks-title{
+  float: left;
+  height: 30px;
+  width: 80%;
+  border: 0px;
+  text-align: center;
+  border-radius: 3px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+#tasks-btn{
+  float: left;
+  height: 30px;
+  width: 20%;
+  border: 0px;
+  text-align: center;
+  border-radius: 3px;
+  color: rgb(62, 181, 249);
+  background-color: white;
+  font-weight: 900;
+  font-size: 12pt;
+  border-left: 1px rgb(62, 181, 249) solid;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+</style>
+</head>
+<body>
+<section>
+  <div id="track">
+    <div id="lists">
+      <h2>My Lists :</h2>
+      <ul id="list-container">
+        
+      </ul>
+      <form>
+      <input type="text" id="title" name="title" placeholder="Title Of The List">
+      <input type="button" id="btn" value="+">
+        </form>
+    </div>
+  </div>
+  <div id="todo">
+    
+  </div>  
+</section>
+
+<script id="jsbin-javascript">
+const listContainer = document.getElementById("list-container");
+const listTitle = document.getElementById("title");
+const addList = document.getElementById("btn");
+const todoContainer = document.getElementById("todo");
+var i = 0;
+var listPos ;
+
+//
+function taskListFollowLists(){
+    let lists = document.getElementsByClassName("list");
+  let listsTask = document.getElementsByClassName("todo__list");
+  for(let m = 0; m < lists.length; m++){
+    if(lists[m].classList.contains("current")){
+      
+      lists[m].classList.remove("current");
+      listsTask[m-1].style.visibility = "hidden";
+     
+    }
+  }
+}
+function taskListFollowLists2(){
+    let lists = document.getElementsByClassName("list");
+  let listsTask = document.getElementsByClassName("todo__list");
+  for(let m = 0; m < lists.length; m++){
+    if(lists[m].classList.contains("current")){
+      
+      lists[m].classList.remove("current");
+      listsTask[m].style.visibility = "hidden";
+     
+    }
+  }
+}
+
+/********************************************/
+/*CREATE NEW TASK LIST*/
+addList.addEventListener("click", ()=>{
+   i++;
+  /*each CLONE will took its own variable script*/
+   var n = "s"+i;
+  
+  /********************************************/
+  /*Add a new list title to the track*/
+  let storeTitle = listTitle.value;
+  listTitle.value = "";
+  let newList = document.createElement("li");
+  newList.classList.add("list");
+  newList.innerHTML = storeTitle;
+  listContainer.prepend(newList);
+  
+  /**********************----------**********************/
+
+  taskListFollowLists();
+  
+  newList.classList.add("current");
+  
+  let listArray = document.getElementsByClassName("list");  
+  
+  /********************************************/
+   /*Add a REMOVE Button to The List*/
+  let removeListBtn = document.createElement("div");
+  removeListBtn.classList.add("remove-list");
+  newList.prepend(removeListBtn);
+  
+  /********************************************/
+  /*to remove list when remove-btn is clicked*/
+  removeListBtn.addEventListener("click", ()=>{
+    removeListBtn.parentElement.remove();
+    document.getElementById(n).remove();
+   })
+  
+   /********************************************/ 
+  /*HighLight The Current Selected List*/
+  newList.addEventListener("click", ()=>{
+    /*get the index of the clicked element*/
+  //console.log(Array.from(newList.parentElement.children).indexOf(newList));
+    
+    taskListFollowLists2();
+    newList.classList.add("current");
+     
+  let listsTask = document.getElementsByClassName("todo__list");
+    if(newList.parentElement != null){
+    listPos = Array.from(newList.parentElement.children).indexOf(newList); 
+    }
+     if(newList.parentElement != null){
+  listsTask[Array.from(newList.parentElement.children).indexOf(newList)].style.visibility = "visible";
+     }
+  })
+  
+  /********************************************/
+  /*Create a new Todo Task List Layout*/
+  let newListTasksContainer = document.createElement("ul");
+  newListTasksContainer.classList.add("todo__list");
+  newListTasksContainer.id = n;
+  todoContainer.prepend(newListTasksContainer);
+
+  /********************************************/
+  /*add a Form (button and input) To the new Todo Task List*/
+  let newForm =document.createElement("form");
+  newForm.id = "tasks-form";
+  let newInput = document.createElement("input");
+  newInput.type = "text";
+  newInput.id = "tasks-title";
+  newForm.prepend(newInput);
+  newInput.setAttribute('placeHolder','Task Title Here');
+   
+  let newAddTasksBtn = document.createElement("button");
+  newAddTasksBtn.id = "tasks-btn";
+  newAddTasksBtn.textContent = "+";
+  newForm.appendChild(newAddTasksBtn);
+  newListTasksContainer.appendChild(newForm);
+  
+  /**/
+  newAddTasksBtn.addEventListener("click", (e)=>{
+    let storeTask = newInput.value;
+    newInput.value = "";
+   let newTask = document.createElement("li");
+    newTask.classList.add("item");
+    newTask.textContent = storeTask;
+    let itemCheck = document.createElement("div");
+    itemCheck.classList.add("check");
+    newTask.prepend(itemCheck);
+    newListTasksContainer.prepend(newTask);
+    itemCheck.addEventListener("click", ()=>{
+      itemCheck.classList.toggle("checked");
+      if(itemCheck.classList.contains("checked")){
+        itemCheck.parentElement.style = `color: lightgray; text-decoration: line-through;`;
+      }else if(!itemCheck.classList.contains("checked")){
+        itemCheck.parentElement.style = `color: black; text-decoration: none;`;
+      }
+    })
+    e.preventDefault();
+  })
+})
+
+</script>
+</body>
+</html>
